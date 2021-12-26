@@ -16,8 +16,16 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
+var (
+	EthNodeAddress = "http://192.168.1.194:9545"
+)
+
+func SetEthNodeAddress(addr string) {
+	EthNodeAddress = addr
+}
+
 func GetClient() *ethclient.Client {
-	client, err := ethclient.Dial("http://192.168.1.194:9545")
+	client, err := ethclient.Dial(EthNodeAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
