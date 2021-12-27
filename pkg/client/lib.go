@@ -63,7 +63,7 @@ func GenPrivateKey() {
 }
 
 func Load() {
-	privKey, err := crypto.LoadECDSA("/home/shenhan/a.a")
+	privKey, err := crypto.LoadECDSA("anyfile")
 	if err != nil {
 		log.Fatal(err)
 	}
