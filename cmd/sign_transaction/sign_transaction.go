@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"encoding/hex"
@@ -79,6 +78,10 @@ func load_wallet() *keystore.Key {
 func main() {
 	initFlags()
 
+	if flag_eth_node_address != "" {
+		client.SetEthNodeAddress(flag_eth_node_address)
+	}
+
 	key := load_wallet()
 	publicKey := key.PrivateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
@@ -88,29 +91,32 @@ func main() {
 	}
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
-	if flag_eth_node_address != "" {
-		client.SetEthNodeAddress(flag_eth_node_address)
-	}
+	var walletBalance float32 = client.GetBalance2(fromAddress)
+	fmt.Printf("Wallet balance: %.6f\n", walletBalance)
+
 	var nonce uint64
 	var err error
 	if nonce, err = client.GetClient().PendingNonceAt(context.Background(), fromAddress); err != nil {
 		fmt.Printf("Failed to get nonce: %s\n", err)
 		os.Exit(1)
 	}
+	fmt.Printf("Using nonce: %d\n", nonce)
 
 	gwei_unit := big.NewInt(1000000000)
 	value_in_gwei := big.NewInt(flag_gwei)
 	var value_in_wei big.Int
 	value_in_wei.Mul(value_in_gwei, gwei_unit)
 
+	var gasPrice *big.Int
 	gasLimit := uint64(21000)
-
-	gasPrice, err := client.GetClient().SuggestGasPrice(context.Background())
-
-	fmt.Printf("Suggested gas price: %s\n", gasPrice)
+	if gasPrice, err = client.GetClient().SuggestGasPrice(context.Background()); err != nil {
+		fmt.Printf("Failed to get suggested gas price: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Using suggested gas price: %s\n", gasPrice)
+	fmt.Printf("Recipient address: %s\n", flag_recipient)
 
 	recipientAddress := common.HexToAddress(flag_recipient)
-
 	var data []byte
 	tx := types.NewTransaction(nonce, recipientAddress, &value_in_wei, gasLimit, gasPrice, data)
 
@@ -119,15 +125,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), key.PrivateKey)
-	if err != nil {
+	var signedTx *types.Transaction
+	if signedTx, err = types.SignTx(tx, types.NewEIP155Signer(chainID), key.PrivateKey); err != nil {
 		log.Fatal(err)
 	}
 
-	var buf bytes.Buffer
-	signedTx.EncodeRLP(&buf)
-
-	rawTxHex := hex.EncodeToString(buf.Bytes())
-
-	fmt.Printf("Tx content: 0x%s\n", rawTxHex)
+	var buf []byte
+	if buf, err = signedTx.MarshalBinary(); err != nil {
+		fmt.Printf("Failed to marshal trx: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Tx content: 0x%s\n", hex.EncodeToString(buf))
 }

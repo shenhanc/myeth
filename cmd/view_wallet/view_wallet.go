@@ -63,7 +63,7 @@ func main() {
 			fmt.Printf("Invalid json wallet file: \"%s\": %s\n", flag_wallet, err)
 			os.Exit(1)
 		}
-		fmt.Printf("Address: %s\n", m["address"])
+		fmt.Printf("Address: 0x%s\n", m["address"])
 		if flag_show_balance {
 			balance := client.GetBalance2(common.HexToAddress(m["address"].(string)))
 			fmt.Printf("Balance: %.6f\n", balance)
