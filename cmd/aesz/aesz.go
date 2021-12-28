@@ -24,28 +24,28 @@ const (
 
 var (
 	flag_passphrase string
-	flag_encrypt    bool
-	flag_decrypt    bool
-	flag_in         string
+	flag_encrypt    string
+	flag_decrypt    string
 	flag_out        string
 )
 
 func initFlags() {
 	flag.StringVar(&flag_passphrase, "passphrase", "", "passphrase")
-	flag.BoolVar(&flag_encrypt, "enc", false, "encrypt mode")
-	flag.BoolVar(&flag_decrypt, "dec", false, "decrypt mode")
-	flag.StringVar(&flag_in, "in", "", "file to be encrypted")
+	flag.StringVar(&flag_encrypt, "enc", "", "file to be encrypted")
+	flag.StringVar(&flag_decrypt, "dec", "", "file to be decrypted")
 	flag.StringVar(&flag_out, "out", "", "file to be encrypted")
 	flag.Parse()
 
-	if !flag_encrypt && !flag_decrypt {
-		fmt.Println("Must specify --enc or --dec.")
-		os.Exit(1)
+	if flag_encrypt == "" && flag_decrypt == "" {
+		log.Fatal("Must specify file name via --enc or --dec.")
 	}
 
-	if flag_in == "" || flag_out == "" {
-		fmt.Println("Must specify --in and --out.")
-		os.Exit(1)
+	if flag_encrypt != "" && flag_decrypt != "" {
+		log.Fatal("Only one of --enc or --dec can be used.")
+	}
+
+	if flag_out == "" {
+		log.Fatal("Must specify output file name via --out.")
 	}
 }
 
@@ -71,7 +71,7 @@ func decrypt(passphrase string) error {
 	if err != nil {
 		return err
 	}
-	if fin, err = os.Open(flag_in); err != nil {
+	if fin, err = os.Open(flag_decrypt); err != nil {
 		return err
 	}
 
@@ -125,7 +125,7 @@ func encrypt(passphrase string) error {
 	}
 
 	var fin io.Reader
-	fin, err = os.Open(flag_in)
+	fin, err = os.Open(flag_encrypt)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func main() {
 	var passphrase string = flag_passphrase
 	var err error
 	if passphrase == "" {
-		if flag_encrypt {
+		if flag_encrypt != "" {
 			passphrase, err = client.AskPassword("Passphrase to encrypt the file: ")
 		} else {
 			passphrase, err = client.AskPasswordNoConfirm("Passphrase to decrypt the file: ")
@@ -184,9 +184,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	if flag_encrypt {
+	if flag_encrypt != "" {
 		err = encrypt(passphrase)
-	} else if flag_decrypt {
+	} else if flag_decrypt != "" {
 		err = decrypt(passphrase)
 	}
 
