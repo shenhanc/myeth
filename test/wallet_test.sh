@@ -4,7 +4,8 @@ set -eu
 
 DDIR="$(cd $(dirname "$0"); pwd)"
 
-TESTDIR="$(mktemp --directory --tmpdir="${DDIR}" test.XXXXXX)"
+mkdir -p ${DDIR}/../build
+TESTDIR="$(mktemp --directory --tmpdir="${DDIR}/../build" test.XXXXXX)"
 
 export GOBIN="${TESTDIR}/bin"
 
@@ -36,7 +37,6 @@ bin/view_wallet --wallet="${restored_wallet_file}" --passphrase=abcdefg 1>dump.2
 if diff dump.1 dump.2; then
     echo "${wallet_file} and ${restored_wallet_file} are the same (encrypted with different passphrases)"
     echo "Test succeeded"
-    rm -fr ${TESTDIR}
 else
     echo "Test failed"
     exit 1

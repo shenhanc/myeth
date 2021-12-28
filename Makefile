@@ -2,12 +2,17 @@ DDIR := $(shell pwd)
 
 SHELL := bash
 
+.phony: install tests
+
 install:
-	if [[ ! -d "$${INSTALL_PREFIX}" ]]; then echo "Invalid INSTALL_PREFIX: $${INSTALL_PREFIX}" ; exit 1; fi
-	export "GOBIN=$${INSTALL_PREFIX}" ; \
+	export "GOBIN=$(DDIR)/build/bin" ; \
 	for component in aesz create_wallet view_wallet restore_wallet ; do \
 		cd $(DDIR)/cmd/$${component} ; go install ; \
 	done
 
-wallet_test:
+tests:
 	test/wallet_test.sh
+	test/aesz_test.sh
+
+clean:
+	rm -fr ./build
