@@ -3,6 +3,7 @@ module github.com/shenhanc78/myeth
 go 1.17
 
 replace github.com/ethereum/go-ethereum => /home/shenhan/projects/go/src/github.com/ethereum/go-ethereum
+replace github.com/tyler-smith/go-bip39 => /home/shenhan/projects/go/src/github.com/tyler-smith/go-bip39
 
 require (
 	github.com/ethereum/go-ethereum v1.10.14
