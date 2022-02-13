@@ -33,7 +33,7 @@ func initFlags() {
 	flag.StringVar(&flag_passphrase, "passphrase", "", "passphrase")
 	flag.StringVar(&flag_encrypt, "enc", "", "file to be encrypted")
 	flag.StringVar(&flag_decrypt, "dec", "", "file to be decrypted")
-	flag.StringVar(&flag_out, "out", "", "file to be encrypted")
+	flag.StringVar(&flag_out, "out", "", "output file name")
 	flag.Parse()
 
 	if flag_encrypt == "" && flag_decrypt == "" {
