@@ -1,14 +1,18 @@
 DDIR := $(shell pwd)
 
 SHELL := bash
+MODPATH := github.com/shenhanc78/myeth
+
+PKGS := aesz client
+CMDS := aesz create_wallet view_wallet restore_wallet
 
 .phony: install tests
 
-install:
-	export "GOBIN=$(DDIR)/build/bin" ; \
-	for component in aesz create_wallet view_wallet restore_wallet ; do \
-		cd $(DDIR)/cmd/$${component} ; go install ; \
-	done
+libs:
+	go install $(foreach l,$(PKGS),$(MODPATH)/pkg/$(l))
+
+cmds:
+	go install $(foreach c, $(CMDS),$(MODPATH)/cmd/$(c))
 
 tests:
 	test/wallet_test.sh
