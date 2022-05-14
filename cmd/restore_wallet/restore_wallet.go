@@ -32,7 +32,7 @@ func initFlags() {
 	flag.Parse()
 
 	if len(flag_mnemonic_file) == 0 {
-		fmt.Printf("Must specify --mnemonic_file")
+		fmt.Printf("Must specify --mnemonic_file\n")
 		os.Exit(1)
 	}
 	fmt.Printf("Using wordlist \"%s\" (changeabe via --wordlist chinese|english)\n", flag_wordlist)
