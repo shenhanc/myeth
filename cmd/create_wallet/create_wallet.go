@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts"
 	bip39wordlist "github.com/tyler-smith/go-bip39/wordlists"
 
-	"github.com/shenhanc78/myeth/pkg/client"
+	"github.com/shenhanc/myeth/pkg/client"
 )
 
 var flag_keystore, flag_wordlist, flag_passphrase string

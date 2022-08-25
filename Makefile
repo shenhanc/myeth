@@ -1,7 +1,7 @@
 DDIR := $(shell pwd)
 
 SHELL := bash
-MODPATH := github.com/shenhanc78/myeth
+MODPATH := github.com/shenhanc/myeth
 
 PKGS := aesz client
 CMDS := aesz create_wallet view_wallet restore_wallet

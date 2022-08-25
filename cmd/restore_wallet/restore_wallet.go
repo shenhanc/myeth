@@ -12,7 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	hdwallet "github.com/miguelmota/go-ethereum-hdwallet"
-	"github.com/shenhanc78/myeth/pkg/client"
+	"github.com/shenhanc/myeth/pkg/client"
 	"github.com/tyler-smith/go-bip39"
 	bip39wordlist "github.com/tyler-smith/go-bip39/wordlists"
 )

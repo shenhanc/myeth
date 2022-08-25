@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/shenhanc78/myeth/pkg/aesz"
-	"github.com/shenhanc78/myeth/pkg/client"
+	"github.com/shenhanc/myeth/pkg/aesz"
+	"github.com/shenhanc/myeth/pkg/client"
 )
 
 const (
