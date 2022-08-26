@@ -1,12 +1,13 @@
 module github.com/shenhanc/myeth
 
-go 1.17
+go 1.18
 
 // replace github.com/ethereum/go-ethereum => /home/shenhan/projects/go/src/github.com/ethereum/go-ethereum
 // replace github.com/tyler-smith/go-bip39 => /home/shenhan/projects/go/src/github.com/tyler-smith/go-bip39
 
 require (
 	github.com/ethereum/go-ethereum v1.10.14
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/miguelmota/go-ethereum-hdwallet v0.1.1
 	github.com/tyler-smith/go-bip39 v1.1.0
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3

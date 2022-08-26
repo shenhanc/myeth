@@ -4,7 +4,7 @@ SHELL := bash
 MODPATH := github.com/shenhanc/myeth
 
 PKGS := aesz client
-CMDS := aesz create_wallet view_wallet restore_wallet
+CMDS := aesz create_wallet view_wallet restore_wallet jwt_util
 
 .phony: install tests
 
