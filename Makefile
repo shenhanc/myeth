@@ -11,6 +11,9 @@ CMDS := aesz create_wallet view_wallet restore_wallet jwt_util
 libs:
 	go install $(foreach l,$(PKGS),$(MODPATH)/pkg/$(l))
 
+$(CMDS): %:
+	go install $(MODPATH)/cmd/$@
+
 cmds:
 	go install $(foreach c, $(CMDS),$(MODPATH)/cmd/$(c))
 
