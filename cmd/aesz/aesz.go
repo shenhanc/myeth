@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/shenhanc/myeth/pkg/aesz"
 	"github.com/shenhanc/myeth/pkg/client"
@@ -41,7 +42,20 @@ func initFlags() {
 	}
 
 	if flag_out == "" {
-		log.Fatal("Must specify output file name via --out.")
+		if flag_decrypt != "" {
+			if strings.HasSuffix(flag_decrypt, ".aesz") {
+				flag_out = strings.TrimSuffix(flag_decrypt, ".aesz")
+			}
+		} else if flag_encrypt != "" {
+			flag_out = fmt.Sprintf("%s.aesz", flag_encrypt)
+		}
+		if flag_out == "" {
+			log.Fatal("Cannot deduce output file name, must specify output file name via --out.")
+		}
+		log.Printf("Use output file: %s", flag_out)
+	}
+	if _, err := os.Stat(flag_out); err == nil {
+		log.Fatalf("Output file already exists: %s", flag_out)
 	}
 }
 
@@ -49,6 +63,7 @@ func decrypt(passphrase string) error {
 	var fin io.ReadCloser
 	var fout io.WriteCloser
 	var err error
+	// O_EXCL makes OpenFile fail if file already exists.
 	fout, err = os.OpenFile(flag_out, os.O_WRONLY|os.O_CREATE|os.O_EXCL, os.FileMode(0666))
 	if err != nil {
 		return err
@@ -83,6 +98,7 @@ func encrypt(passphrase string) error {
 	}()
 
 	var fout io.WriteCloser
+	// O_EXCL makes OpenFile fail if file already exists.
 	fout, err = os.OpenFile(flag_out, os.O_WRONLY|os.O_CREATE|os.O_EXCL, os.FileMode(0666))
 	if err != nil {
 		return err
@@ -127,6 +143,8 @@ func main() {
 	}
 
 	if err != nil {
+		os.Remove(flag_out)
 		log.Fatal(err)
 	}
+	log.Printf("Done: %s", flag_out)
 }
